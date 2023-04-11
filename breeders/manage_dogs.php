@@ -4,7 +4,7 @@ require('../connect.php');
 //session_start();
 $userid=$_SESSION['id'];
 
-$sql="SELECT * FROM `dogs` JOIN category JOIN sub_category ON dogs.category=category.id and dogs.gender=sub_category.id where dogs.user_id='$userid'";
+$sql="SELECT dogs.id as dogid,dogs.name as dogname,dogs.age,dogs.gender,dogs.image,dogs.price,dogs.category,dogs.petid,category.name as catname FROM `dogs` JOIN category ON dogs.category=category.id  where dogs.user_id='$userid' order by dogs.id desc";
 $stmt=$pdo->prepare($sql);
 $stmt->execute();
 $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,6 +28,7 @@ $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Gender</th>
                 <th>Age</th>
                 <th>Price</th>
+                <th>Pet Id</th>
                 <th>Action</th>
                 <!-- <th>Date Added</th> -->
             </tr>
@@ -40,14 +41,15 @@ $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);
             <tr>
                 <td><?php echo $i;?></td>
                 <td><img src="../dogs/<?php echo $row['image'];?>" alt="" style="width:150px; height:100px"></td>
-                <td><?php echo $row['name'];?></td>
-                <td><?php echo $row['name'];?></td>
-                <td><?php echo $row['gender'];?></td>
+                <td><?php echo $row['dogname'];?></td>
+                <td><?php echo $row['catname'];?></td>
+                <td><?=($row['gender']=="1") ? "Male" : "Female";?></td>
                 <td><?php echo $row['age'];?></td>
-                <td><?php echo $row['price'];?></td>
+                <td><?php echo "N".number_format($row['price'],2);?></td>
+                <td><?php echo $row['petid'];?></td>
                 <td>
-                    <a href="update_dogs.php?dogid=<?php echo $row['id'];?>">Edit</a><br>
-                    <a href="delete_dogs.php?dogid=<?php echo $row['id'];?>" onclick="return confirm('Are you want to delete this dog?');">Delete</a>
+                    <a href="update_dog.php?dogid=<?php echo $row['dogid'];?>">Edit</a><br>
+                    <a href="delete_dog.php?dogid=<?php echo $row['dogid'];?>" onclick="return confirm('Are you want to delete this dog?');">Delete</a>
                 </td>
                 
             </tr>

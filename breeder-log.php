@@ -78,17 +78,14 @@ $stmt ->bindParam(':address',$address);
 $stmt ->bindParam(':date',$date);
 
 try{
-	   $stmt->execute();
-       @session_start();
-		$_SESSION['username'] = $username;
-          
+	   $stmt->execute();     
 		echo '<script>alert("Account Registeration Successful");
 		 location.href="breeder-log.php";</script>';
 
 		}catch(Exception $e){
-		echo $e->getMessage();
-		// echo '<script>alert("Registration Failed Contact The Admin at dgw@dogworld.org");
-		// location.href="breeder-log.php";</script>';
+		//echo $e->getMessage();
+		echo '<script>alert("Registration Failed Contact The Admin at dgw@dogworld.org");
+		location.href="breeder-log.php";</script>';
 }
 }
 

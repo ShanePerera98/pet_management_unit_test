@@ -3,13 +3,34 @@ error_reporting(0);
 session_start();
 include('header.php');
 require('../connect.php');
-require('../funtion.php');
-$userid=$_SESSION['id'];
+$dogid=$_GET['dogid'];
+$sql="SELECT * FROM `dogs` WHERE id='$dogid'";
+$stmt=$pdo->prepare($sql);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(isset($_POST['add_dog'])){
+$categories_sql="SELECT * FROM `category`";
+$stmt2=$pdo->prepare($categories_sql);
+$stmt2->execute();
+$categories = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+
+$genders_sql="SELECT * FROM `sub_category`";
+$stmt3=$pdo->prepare($genders_sql);
+$stmt3->execute();
+$genders = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+
+if(isset($_POST['update'])){
     $pdo = prepareConnection();
-     $d_image= date("YmdHis").strtolower($_FILES['d_image']['name']);
-    $d_name= $_POST['d_name'];
+    if(empty($_FILES['d_image']['name'])){
+        $d_image=$_POST['prev_image']; 
+    }
+    else{
+        $d_image= date("YmdHis").strtolower($_FILES['d_image']['name']);
+  
+    }
+      $d_name= $_POST['d_name'];
+      $id= $_POST['id'];
     $d_category=$_POST['d_category'];
     $gender=$_POST['gender'];
     $age=$_POST['age'];
@@ -20,18 +41,14 @@ if(isset($_POST['add_dog'])){
     $healthy=$_POST['healthy'];
     $medication=$_POST['medication'];
     $date = date('Y/m/d');
-    $sql="SELECT `name`,`gender`,`user_id` FROM `dogs` ORDER BY `name`";
+    $sql="SELECT `id`,`name`,`gender`,`user_id` FROM `dogs` WHERE `name`='$d_image' AND `id`!='$id'";
     $stmt=$pdo->prepare($sql);
     $stmt->execute();
-    $pros=$stmt->fetchAll(PDO::FETCH_ASSOC);
-    $pro=$pros[0];
+    $pro=$stmt->fetch(PDO::FETCH_ASSOC);
     if($pro['name']==$d_name AND $pro['gender']==$gender AND $pro['user_id']==$userid){
-        echo'<script>alert("This Dog Already Exist ");location.href="add_dog.php";</script>';
+        echo '<script>alert("This Dog Already Exist ");location.href="update_dog.php?id='.$id.';</script>';
     }else{
-		
-		
-    $sql ="INSERT INTO `dogs`(`name`, `category`, `gender`,`age`,`dob`, `image`, `price`, `quantity`,`petid`,`user_id`,`healthy`,`medication`,`date_added`)
-    VALUES(:d_name,:category,:gender,:age,:dob,:d_image,:price,:quantity,:petid,:userid,:healthy,:medication,:date_added)";
+    $sql ="UPDATE `dogs` SET `name`=:d_name, `category`=:category, `gender`=:gender,`age`=:age,`dob`=:dob, `image`=:d_image, `price`=:price,`petid`=:petid,`healthy`=:healthy,`medication`=:medication WHERE `id`=:id";
     $stmt = $pdo->prepare($sql);
 
     $stmt ->bindParam(':d_image',$d_image);
@@ -41,29 +58,30 @@ if(isset($_POST['add_dog'])){
     $stmt ->bindParam(':age',$age);
     $stmt ->bindParam(':dob',$dob);
     $stmt ->bindParam(':price',$price);
-    $stmt ->bindParam(':quantity',$quantity);
     $stmt ->bindParam(':petid',$petid);
-    $stmt ->bindParam(':userid',$userid);
     $stmt ->bindParam(':healthy',$healthy);
     $stmt ->bindParam(':medication',$medication);
-	    $stmt ->bindParam(':date_added',$date);
+    $stmt ->bindParam(':id',$id);
         try{
+            if(!empty($_FILES['d_image']['name'])){
         move_uploaded_file($_FILES['d_image']['tmp_name'], '../dogs/'.$d_image);
+            }
         $stmt->execute();
           
-		echo '<script>alert("Dog added successfully!!!");
-		 location.href="add_dog.php";</script>';
+		echo '<script>alert("Dog updated successfully!!!");
+		 location.href="manage_dogs.php";</script>';
 
 		}catch(Exception $e){
-		echo $e->getMessage();
-		// echo '<script>alert("Dog Not Added, Try again ");
-		// location.href="add_dog.php";</script>';
+		//echo $e->getMessage();
+		echo '<script>alert("Dog fail to be updated, Try again ");
+		location.href="manage_dogs.php";</script>';
 		
         }
 
     }
 
 }
+
 
 
 ?>
@@ -73,40 +91,49 @@ if(isset($_POST['add_dog'])){
   <div id="main-content" >
 
     <div class="content-left">
-    <!-- Side bar here -->
-    <?php include('b_side_bar.php');?>
-    <!-- end of side bar -->
+        <!-- side bar here -->
+       <?php include('b_side_bar.php');?>
+       <!-- side bar end -->
     </div>
     <div id="add_product" class="right">
-        <form action="add_dog.php" method="post" enctype="multipart/form-data">
+    <form action="update_dog.php?id=<?=$row['id'];?>" method="post" enctype="multipart/form-data">
             
             <div class="form-group">
                 <label for="">Dog_Name</label><br>
-                <input type="text" name="d_name" style="width:400px">
+                <input type="text" name="d_name" style="width:400px" value="<?=$row['name'];?>">
             </div>
             <div class="form-group">
                 <label for="">Category</label><br>
                 <select name="d_category" id="" style="width:400px">
-                   <?php echo $cat_list;?>
+                   <?php
+                   foreach($categories as $category){ ?>
+                    <option value="<?=$category['id']?>" <?=($category['id']==$row['category'])? "selected" : ""?>><?=$category['name']?></option>
+                   <?php }
+                   ?>
                 </select>
             </div>
             <div class="form-group">
                 <label for="">Gender</label><br>
                 <select name="gender" style="width:400px">
-                <?php echo $product_list;?>
+                <?php
+                   foreach($genders as $gender){ ?>
+                    <option value="<?=$gender['id']?>" <?=($gender['id']==$row['gender'])? "selected" : ""?>><?=$gender['sub_cat']?></option>
+                   <?php }
+                   ?>
                 </select>
+               
             </div>
            <div class="form-group">
                <label for="">Date of Birth</label><br>
-                <input type="date" name="dob" id="dob" style="width:400px; height:30px;">
+                <input type="date" name="dob" id="dob" style="width:400px; height:30px;" value="<?=$row['dob'];?>">
            </div>
            <div class="form-group">
                <label for="">Age</label><br>
-                <input type="text" name="age" id="age" style="width:400px; height:30px;">
+                <input type="text" name="age" id="age" style="width:400px; height:30px;" value="<?=$row['age'];?>">
            </div>
             <div class="form-group">
                 <label for="">Price</label><br>
-                <input type="text" name="price" style="width:400px">
+                <input type="text" name="price" style="width:400px" value="<?=$row['price'];?>">
             </div>
             <div class="form-group">
                 <label for="">Image</label>
@@ -115,22 +142,23 @@ if(isset($_POST['add_dog'])){
 			
 			<div class="form-group">
                 <label for="">Healthy Suppliment</label><br/>
-                <textarea  name="healthy" style="width:400px"></textarea>
+                <textarea  name="healthy" style="width:400px"><?=$row['healthy'];?></textarea>
             </div>
 
             <div class="form-group">
                 <label for="">Medication</label><br/>
-                <textarea  name="medication" style="width:400px"></textarea>
+                <textarea  name="medication" style="width:400px"><?=$row['medication'];?></textarea>
             </div>
 
             <div class="form-group">
-                <label for="">Pet ID (from vetinary doctor )</label><br/>
-                <input type="text" name="pet_id" style="width:400px">
+                <label for="">Pet ID</label><br/>
+                <input type="text" name="pet_id" style="width:400px" value="<?=$row['petid'];?>">
             </div>
 
             <div class="form-group">
-                
-                <input type="submit"  value="Add Dog" name="add_dog" style="width:150px">
+                 <input type="hidden" name="id" value="<?=$_GET['dogid'];?>">
+                 <input type="hidden" name="prev_image" value="<?=$row['image'];?>">
+                <input type="submit"  value="update" name="update" style="width:150px">
             </div>
             
 

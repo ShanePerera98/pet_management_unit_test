@@ -3,7 +3,7 @@ require('../connect.php');
 
 $dogid=$_GET['dogid'];
 
-$sql="DELETE FROM dogs WHERE d_id='$dogid'";
+$sql="DELETE FROM dogs WHERE id='$dogid'";
 $stmt=$pdo->prepare($sql);
 try{
     $stmt->execute();
