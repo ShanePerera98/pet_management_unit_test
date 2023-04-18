@@ -26,7 +26,7 @@ if(isset($_POST['login'])){
              
 			if($row['role_id'] == 3){ 
 			
-			header('location:breeders/breeders_home.php');
+			header('location:breeders/breed-guide.php');
 		}
 			else{ 
 				header('location:breeder-log.php');

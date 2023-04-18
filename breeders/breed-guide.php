@@ -22,7 +22,7 @@ include('header.php');
     </div>
 
 <div class="right">
-	
+<embed width="100%" height="900px" src="../pdf/guide_to_dog_breeding.pdf">
 </div>
 </div>
 

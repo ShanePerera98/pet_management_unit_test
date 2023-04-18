@@ -45,7 +45,7 @@ if(isset($_POST['add_to_chart']))
 //-----session cart---//
 
 
-$sql="SELECT dogs.id AS dog_id,dogs.name AS dog_name,dogs.image AS dog_image,dogs.price AS price,
+$sql="SELECT dogs.id AS dog_id,dogs.name AS dog_name,dogs.image AS dog_image,dogs.price AS price,dogs.age,
 category.name AS category_name, 
 sub_category.sub_cat AS sub_cat,dogs.category,dogs.gender,category.id,sub_category.id
  FROM `dogs` INNER JOIN `category` ON dogs.category=category.id INNER JOIN `sub_category` ON dogs.gender=sub_category.id ORDER BY dog_name ASC";
@@ -125,6 +125,7 @@ $cts= $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h4 style="align:left">Dog Name:<?php echo  $dog['dog_name'] ;?></h4>
                 <h4>Breed:<?php echo $dog['category_name']." <br/> Gender: ". $dog['sub_cat'];?></h4>
                 <img src="dogs/<?php echo $dog['dog_image'];?>" alt="" width="100%" height="150px">
+                <h4>Age: <?=$dog['age'];?></h4>
                 <h4>Amount:  N<?php echo number_format($dog['price'],2);?></h4>
                 <br>
                 <input type="hidden" name="hid_name"  value="<?php echo $dog['dog_name'];?>">

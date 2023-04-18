@@ -1,8 +1,8 @@
 <div class="footer">
   <div class="foot-container">
   <div class="footer-left">
-    <h2>Dogs World</h2>
-    <P style="margin-left:10px; text-align:justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic animi commodi necessitatibus at. Fuga iure minima dolor alias, debitis quis, natus. </P>
+    <h2>DOGS WORLD</h2>
+    <P style="margin-left:10px;text-align:justify">DOGS WORLD was established in 2020 at No where, along St road and now it has several branches and extensions, such. </P>
     
   </div>
   <div class="footer-middle" style="text-align:center">
@@ -16,22 +16,16 @@
   <div class="footer-right">
     <h2>Contact-INFORMATION</h2>
     <ul style="margin-left:20%;">
-      <li>Location: NO: 222, kasuwa Jega </li>
-      <li>Phone:  +2348101234567</li>
-      <li>email:  dogw@gmail.com</li>
+      <li>Location: No 6 alakija lagos </li>
+      <li>Phone:  +234812211234567</li>
+      <li>email:  dw@gmail.com</li>
     </ul>
-	<br/>
-    <h2>Contact us On Social Media</h2>
-    <ul style="margin-left:20%; ">
-      <li><a href="facebook.com"><img src="../img/fb.png" alt="facebook"></a></li>
-      <li><a href="twitter.com"><img src="../img/tw.png" alt="twitter"></a></li>
-      <li><a href="whatsapp.com"><img src="../img/whatsapp.png" alt="whatsapp"></a></li>
-      
-    </ul>
+
+   
   </div>
 </div>
 <hr>
-  &copy copy right 2023  Developed:
+  &copy copy right 2023  dogs   world:.
   </div>
 </div>
 </body>
